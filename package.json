@@ -1,0 +1,11 @@
+{
+  "name": "google-contacts-csv-parser",
+  "version": "0.1.0",
+  "description": "Takes a raw csv file of contacts exported from Gmail and turns it into a tidy JSON object",
+  "author": "Ben Hymers <b.hymers@gmail.com>",
+  "dependencies": {
+    "csv": "0.4.x",
+	"q": "0.9.x"
+  },
+  "engine": "node >= 0.10.20"
+}
