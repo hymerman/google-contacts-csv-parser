@@ -22,6 +22,10 @@ function writeFilePromise(file_name, file_contents) {
   return deferred.promise;
 }
 
+var properties_which_should_be_arrays = ['E-mail', 'Phone', 'Website', 'Custom Field', 'Address', 'Organization'];
+var properties_objects_in_array_properties_should_have = {'E-mail':'Value', 'Phone':'Value', 'Website':'Value', 'Custom Field':'Value', 'Address':'Formatted'};
+var array_field_regex = /(\d+)[ ]-[ ](.*)/;
+
 var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data){
   if(err) {
     console.log("Error: " + err);
@@ -34,17 +38,14 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
           delete contact[property_name];
         } else {
           // Create arrays of things that should be arrays.
-          // todo: remove these things if they're useless, e.g. many of my contacts have a custom field with a type but no value.
           //console.log("Checking whether property should be an array: " + property_name);
-          var properties_which_should_be_arrays = ['E-mail', 'Phone', 'Website', 'Custom Field', 'Address', 'Organization'];
           for(var property_which_should_be_array_index in properties_which_should_be_arrays) {
             var property_which_should_be_array = properties_which_should_be_arrays[property_which_should_be_array_index];
             //console.log("Checking " + property_which_should_be_array);
             if(property_name.indexOf(property_which_should_be_array) === 0) {
               //console.log("Found field which should be an array: " + property_name);
               // These fields are all of the form: "Field Name N - Inner Field Name", where both fields can have spaces. I think the best way to get both field names is to split on the number and hyphen.
-              var regex = /(\d+)[ ]-[ ](.*)/;
-              var result = property_name.substring(property_which_should_be_array.length + 1).match(regex);
+              var result = property_name.substring(property_which_should_be_array.length + 1).match(array_field_regex);
               var array_index = result[1] - 1;
               var sub_object_property_name = result[2];
               //console.log("Extracted array index: " + array_index + ", property name: " + sub_object_property_name);
@@ -69,6 +70,30 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
               delete contact[property_name];
             }
           }
+        }
+      }
+      // Remove array fields if they're useless, e.g. many of my contacts have a custom field with a type but no value.
+      for(var outer_property in properties_objects_in_array_properties_should_have)
+      {
+        var inner_property = properties_objects_in_array_properties_should_have[outer_property];
+
+        if(contact[outer_property] === null || contact[outer_property] === undefined) {
+          continue;
+        }
+
+        //console.log("Found contact with field to check: " + outer_property + "(length:" + contact[outer_property].length + ") each must have " + inner_property);
+
+        for(var array_index = contact[outer_property].length - 1; array_index >= 0; --array_index) {
+          //console.log("Checking whether " + JSON.stringify(contact[outer_property][array_index]) + " has property " + inner_property);
+          if(contact[outer_property][array_index][inner_property] === null || contact[outer_property][array_index][inner_property] === undefined || contact[outer_property][array_index][inner_property] == "") {
+            //console.log("Doesn't have property; deleting");
+            contact[outer_property].splice(array_index, 1);
+          }
+        }
+
+        if(contact[outer_property].length == 0) {
+          //console.log("No more values exist in array; deleting whole property.");
+          delete contact[outer_property];
         }
       }
     }
