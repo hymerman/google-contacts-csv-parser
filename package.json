@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Takes a raw csv file of contacts exported from Gmail and turns it into a tidy JSON object",
   "author": "Ben Hymers <b.hymers@gmail.com>",
+  "private": true,
   "dependencies": {
     "csv": "0.4.6",
     "js-yaml": "3.5.2",
