@@ -103,4 +103,4 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
 
 var input_file_path = process.argv[2];
 
-fs.createReadStream(input_file_path).pipe(parser);
+fs.createReadStream(input_file_path, {encoding:'ucs2'}).pipe(parser);
