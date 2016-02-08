@@ -7,7 +7,7 @@
     "csv": "0.4.x",
     "js-yaml": "3.5.2",
     "json-stable-stringify": "1.0.x",
-    "q": "0.9.x",
+    "q": "1.4.1",
     "stable": "0.1.x"
   },
   "engines": {
