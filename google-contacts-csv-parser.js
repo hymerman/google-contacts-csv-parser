@@ -6,6 +6,7 @@ var csv = require('csv');
 var parse = csv.parse;
 var stringify = require('json-stable-stringify');
 var stable_sort = require('stable');
+var yaml = require('js-yaml');
 
 function writeFilePromise(file_name, file_contents) {
   var deferred = q.defer();
@@ -110,6 +111,7 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
 
     // Save file.
     writeFilePromise(output_file_path, stringify(data, { space: '  '}));
+    writeFilePromise(output_file_path + ".yaml", yaml.safeDump(data));
   }
 });
 
