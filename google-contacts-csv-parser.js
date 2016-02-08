@@ -97,10 +97,12 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
         }
       }
     }
-    writeFilePromise("contacts.json", JSON.stringify(data, null, " "));
+    // Save file.
+    writeFilePromise(output_file_path, JSON.stringify(data, null, " "));
   }
 });
 
 var input_file_path = process.argv[2];
+var output_file_path = process.argv[3];
 
 fs.createReadStream(input_file_path, {encoding:'ucs2'}).pipe(parser);
