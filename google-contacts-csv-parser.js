@@ -5,6 +5,7 @@ var q = require('q');
 var csv = require('csv');
 var parse = csv.parse;
 var stringify = require('json-stable-stringify');
+var stable_sort = require('stable');
 
 function writeFilePromise(file_name, file_contents) {
   var deferred = q.defer();
@@ -98,6 +99,15 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
         }
       }
     }
+
+    // Sort contacts.
+    stable_sort.inplace(data, function(lhs, rhs){
+      if((lhs.Name === undefined || lhs.Name === null) && !(rhs.Name === undefined || rhs.Name === null)) return -1;
+      if((rhs.Name === undefined || rhs.Name === null) && !(lhs.Name === undefined || lhs.Name === null)) return 1;
+      if((lhs.Name === undefined || lhs.Name === null) &&  (rhs.Name === undefined || rhs.Name === null)) return 0; // todo: sort on email 1 if neither have a name?
+      return lhs.Name.localeCompare(rhs.Name);
+    });
+
     // Save file.
     writeFilePromise(output_file_path, stringify(data, { space: '  '}));
   }
