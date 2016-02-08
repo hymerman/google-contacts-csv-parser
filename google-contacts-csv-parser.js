@@ -4,6 +4,7 @@ var fs = require('fs');
 var q = require('q');
 var csv = require('csv');
 var parse = csv.parse;
+var stringify = require('json-stable-stringify');
 
 function writeFilePromise(file_name, file_contents) {
   var deferred = q.defer();
@@ -98,7 +99,7 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
       }
     }
     // Save file.
-    writeFilePromise(output_file_path, JSON.stringify(data, null, " "));
+    writeFilePromise(output_file_path, stringify(data, { space: '  '}));
   }
 });
 
