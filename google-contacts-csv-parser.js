@@ -34,6 +34,7 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
   if(err) {
     winston.error("Error: " + err);
   } else {
+    winston.debug("Read some data from the file");
     for(var contact_index in data) {
       var contact = data[contact_index];
       // Remove empty fields.
