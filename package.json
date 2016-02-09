@@ -7,6 +7,7 @@
   "dependencies": {
     "csv": "0.4.6",
     "js-yaml": "3.5.2",
+    "jschardet": "1.4.1",
     "json-stable-stringify": "1.0.1",
     "q": "1.4.1",
     "stable": "0.1.5",

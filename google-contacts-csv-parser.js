@@ -8,6 +8,7 @@ var stringify = require('json-stable-stringify');
 var stable_sort = require('stable');
 var yaml = require('js-yaml');
 var winston = require('winston');
+var jschardet = require("jschardet");
 
 function writeFilePromise(file_name, file_contents) {
   var deferred = q.defer();
@@ -120,4 +121,9 @@ var parser = parse({delimiter: ',', quote:'"', columns:true}, function(err, data
 var input_file_path = process.argv[2];
 var output_file_path = process.argv[3];
 
-fs.createReadStream(input_file_path, {encoding:'ucs2'}).pipe(parser);
+var content = fs.readFileSync(input_file_path);
+var encoding = jschardet.detect(content).encoding.toLowerCase();
+
+winston.info("Detected encoding of input file: " + encoding);
+
+fs.createReadStream(input_file_path, {encoding:encoding}).pipe(parser);
